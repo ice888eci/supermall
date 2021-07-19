@@ -1,6 +1,8 @@
 <template>
-  <div class="wrapper">
-    <div class="content"></div>
+  <div class="wrapper" ref="wrapper">
+    <div class="content">
+      <slot></slot>
+    </div>
     <!-- 这里可以放一些其它的 DOM，但不会影响滚动 -->
   </div>
 </template>
@@ -14,33 +16,22 @@ export default {
     };
   },
   mounted() {
-    this.scroll = new BScroll(".wrapper", {
+    /**
+     * @this.$refs.wrapper
+     * 组件会被服用直接查找.wrapper会不知道拿的是谁
+     */
+    this.scroll = new BScroll(this.$refs.wrapper, {
       probeType: 2,
       pullUpLoad: true,
+      click: true,
     });
     this.scroll.on("scroll", function () {
       // console.log(1);
     });
-
-    this.scroll.on("pullingUp", function () {
-      console.log("上啦");
-    });
+    this.scroll.on("pullingUp", function () {});
   },
-  methods: {
-    btn() {
-      console.log(this.scroll);
-    },
-  },
+  methods: {},
 };
 </script>
 <style  scoped>
-.wrapper {
-  background-color: rgb(161, 159, 159);
-  height: 400px;
-
-  overflow: scroll;
-}
-li {
-  height: 30px;
-}
 </style>

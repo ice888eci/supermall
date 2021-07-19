@@ -40,14 +40,14 @@ export default {
   background-color: #fff;
   line-height: 40px;
   position: sticky;
-  top: 44px;
+  top: 100px;
 }
 
 .tab-control-item {
   flex: 1;
 }
 
-.tab-control-item span {
+.tab-control-item p {
   padding: 5px;
   transition: all 0.5s;
 }

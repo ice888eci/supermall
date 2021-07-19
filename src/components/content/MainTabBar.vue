@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="tabbar">
     <tab-bar>
       <tab-bar-item prop-path="/home" prop-color="red">
         <img src="~/assets/img/tabbar/home.svg" slot="item-icon" />
@@ -46,4 +46,7 @@ import TabBarItem from "@/components/common/tabbar/TabBarItem.vue";
 export default { components: { TabBar, TabBarItem } };
 </script>
 <style  scoped>
+#tabbar {
+  z-index: 20;
+}
 </style>

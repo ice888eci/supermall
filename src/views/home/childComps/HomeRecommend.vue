@@ -2,7 +2,7 @@
   <div class="home-recommend">
     <section v-for="item in recommend" :key="item.sort">
       <img :src="item.image" />
-      <p>{{ item.title }}</p>
+      <span>{{ item.title }}</span>
     </section>
   </div>
 </template>
@@ -20,15 +20,18 @@ export default {
 <style  scoped>
 .home-recommend {
   display: flex;
+  width: 100%;
+  text-align: center;
+  padding: 5px;
 }
 section {
   padding: 10px;
   flex: 1;
   border-bottom: 8px solid #eee;
+  font-size: 9px;
 }
-section > p {
+section > span {
   text-align: center;
-  font-size: 1rem;
 }
 section img {
   width: 100%;
