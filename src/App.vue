@@ -1,7 +1,9 @@
 <template>
   <div id="app">
     <main-tab-bar />
-    <router-view />
+    <!-- 路由切换保存 -->
+    <!-- 根据组件name 来排除detail -->
+    <keep-alive exclude="detail"> <router-view /></keep-alive>
   </div>
 </template>
 

@@ -1,6 +1,6 @@
 <template>
   <div class="goods-item">
-    <img :src="item.show.img" />
+    <img :src="item.show.img" @load="imgLoad" @click="goDetail(item)" />
     <div class="goods-info">
       <p>{{ item.title }}</p>
       <span class="price">{{ item.price }}</span>
@@ -15,6 +15,20 @@ export default {
     item: {
       type: Object,
       require: true,
+    },
+  },
+  methods: {
+    imgLoad() {
+      this.$bus.$emit("imgLoad");
+      // this.$store.dispatch("upDataImg");
+    },
+    goDetail(item) {
+      this.$router.push({
+        name: "detail",
+        params: {
+          id: item.iid,
+        },
+      });
     },
   },
 };

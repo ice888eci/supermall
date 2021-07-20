@@ -10,9 +10,25 @@
 <script>
 import BScroll from "better-scroll";
 export default {
+  props: {
+    // 设置成对象就不能不写内容
+    probeType: {
+      type: Number,
+      default() {
+        return 1;
+      },
+    },
+    pullUpLoad: {
+      type: Boolean,
+      default() {
+        return true;
+      },
+    },
+  },
   data() {
     return {
       scroll: null,
+      saveTop: 0,
     };
   },
   mounted() {
@@ -21,16 +37,41 @@ export default {
      * 组件会被服用直接查找.wrapper会不知道拿的是谁
      */
     this.scroll = new BScroll(this.$refs.wrapper, {
-      probeType: 2,
-      pullUpLoad: true,
+      probeType: this.probeType,
+      pullUpLoad: this.pullUpLoad,
       click: true,
     });
-    this.scroll.on("scroll", function () {
-      // console.log(1);
+    /**
+     * @scroll
+     * 滚动事件
+     */
+    this.scroll.on("scroll", (postion) => {
+      this.$emit("backTopState", postion);
     });
-    this.scroll.on("pullingUp", function () {});
+    /**
+     * @pullingUp
+     * 上拉到底触发事件
+     */
+    this.scroll.on("pullingUp", (_) => {
+      this.$emit("dataUpdate");
+    });
   },
-  methods: {},
+  methods: {
+    // 第一个参数x轴的距离,第二个参数y轴的距离,第三个参数是延迟时间
+    scrollTo(x, y, time = 500) {
+      this.scroll && this.scroll.scrollTo(x, y, time);
+    },
+    // 并且是为了保证this.scroll存在才执行
+    refresh() {
+      this.scroll && this.scroll.refresh();
+    },
+    finishPullUp() {
+      this.scroll && this.scroll.finishPullUp();
+    },
+    getScrollY() {
+      return this.scroll.y;
+    },
+  },
 };
 </script>
 <style  scoped>

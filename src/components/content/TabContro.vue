@@ -29,18 +29,22 @@ export default {
       this.current = index;
       this.$emit("tabClick", index);
     },
+    toggleIndex(index) {
+      this.current = index;
+    },
   },
 };
 </script>
 <style  scoped>
 .tab-control {
+  width: 100%;
   display: flex;
   text-align: center;
   font-size: 15px;
   background-color: #fff;
   line-height: 40px;
-  position: sticky;
-  top: 100px;
+  position: absolute;
+  z-index: 22;
 }
 
 .tab-control-item {

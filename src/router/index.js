@@ -7,6 +7,7 @@ const Home = () => import('@/views/home/Home.vue');
 const Category = () => import('@/views/category/Category.vue');
 const Profile = () => import('@/views/profile/Profile.vue');
 const Shopcart = () => import('@/views/shopcart/Shopcart.vue');
+const Detail = () => import('@/views/detail/Detail.vue');
 
 export default new Router({
     routes: [
@@ -33,6 +34,11 @@ export default new Router({
             path: '/profile',
             name: 'profile',
             component: Profile
+        },
+        {
+            path: '/detail/:id',
+            name: 'detail',
+            component: Detail
         },
     ],
     mode: 'history',
