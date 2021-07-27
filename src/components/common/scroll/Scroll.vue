@@ -52,7 +52,7 @@ export default {
      * @pullingUp
      * 上拉到底触发事件
      */
-    this.scroll.on("pullingUp", (_) => {
+    this.scroll.on("pullingUp", () => {
       this.$emit("dataUpdate");
     });
   },

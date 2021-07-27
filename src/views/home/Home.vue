@@ -35,7 +35,7 @@
 
 <script>
 // utils
-import { debounce } from "@/common/utils";
+import { busMixins } from "@/common/mixins";
 // common
 import NavBar from "@/components/common/navbar/NavBar";
 import Scroll from "@/components/common/scroll/Scroll";
@@ -61,6 +61,7 @@ export default {
     Scroll,
     BackTop,
   },
+  mixins: [busMixins],
   data() {
     return {
       TabType: "pop",
@@ -77,7 +78,6 @@ export default {
       },
     };
   },
-
   created() {
     /**
      * 请求home的banner和recommend
@@ -91,14 +91,7 @@ export default {
     this.getGoodsData("pop");
     this.getGoodsData("sell");
   },
-  mounted() {
-    // 挂载后 图片load加载就会监听到并防抖节流函数
-    this.$bus.$on("imgLoad", () => {
-      if (this.$refs.scroll) {
-        debounce(this.$refs.scroll.refresh, 200).call(this);
-      }
-    });
-  },
+  mounted() {},
   //  在当前组件/路由设置了Keep-alive时生效
   activated() {
     // 切换回来刷新一下
@@ -109,7 +102,13 @@ export default {
   // 在离开当前组件/路由设置了Keep-alive时生效
   deactivated() {
     this.saveTop = this.$refs.scroll.getScrollY();
+
+    /**
+     * 离开时关闭当前控制$bus防止其他页面链接自己
+     */
+    this.$bus.$off("imgLoad", this.busHandle);
   },
+  // Keep-alive所以不会执行
   beforeDestroy() {
     console.log("home");
   },
@@ -137,11 +136,13 @@ export default {
          * 作用：当上拉加载数据加载完毕后，需要调用此方法告诉 better-scroll 数据已加载。
          */
         this.$refs.scroll.finishPullUp();
+        //  console.log("到底了");
+        // 到底后重置过finishPullUp 在刷新一次页眉会减少来回切换倒底时加载图片卡顿的情况
+        this.$refs.scroll.refresh();
       });
     },
 
     //点击事件区域
-
     /**
      * @tabClick
      * 点击切换类型

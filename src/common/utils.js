@@ -20,4 +20,23 @@ function debounce(fn, wait = 1000, immediate = true) {
         }
     };
 }
-export { debounce }
+function DateFormat(date, format = "YYYY-MM-DD HH:mm:ss") {
+    const config = {
+        YYYY: date.getFullYear(),
+        MM: date.getMonth() + 1,
+        DD: date.getDate(),
+        HH: date.getHours(),
+        mm: date.getMinutes(),
+        ss: date.getSeconds()
+    }
+    for (let key in config) {
+        /**
+         * @padStart
+         * 小于两位数的补零
+         */
+        let newKey = config[key].toString().padStart('2', '0');
+        format = format.replace(key, newKey)
+    }
+    return format;
+}
+export { debounce, DateFormat }

@@ -100,5 +100,16 @@ methods: {
   },
 ```
 
+> 滚动代码
+```js
+let positionX = -position.y;
+      if (this.tabControlTop != 0 && positionX > this.tabControlTop) {
+        this.$refs.tabControl.$el.style.position = "fixed";
+        this.$refs.tabControl.$el.style.top = positionX + "px";
+      } else {
+        this.$refs.tabControl.$el.style.position = "relative";
+        this.$refs.tabControl.$el.style.top = "0px";
+      }
+```
 
 

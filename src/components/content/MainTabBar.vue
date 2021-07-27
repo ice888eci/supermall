@@ -47,6 +47,6 @@ export default { components: { TabBar, TabBarItem } };
 </script>
 <style  scoped>
 #tabbar {
-  z-index: 20;
+  z-index: 9;
 }
 </style>

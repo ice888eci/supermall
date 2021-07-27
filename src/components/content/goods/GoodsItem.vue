@@ -1,6 +1,6 @@
 <template>
   <div class="goods-item">
-    <img :src="item.show.img" @load="imgLoad" @click="goDetail(item)" />
+    <img :src="getImg" @load="imgLoad" @click="goDetail(item)" />
     <div class="goods-info">
       <p>{{ item.title }}</p>
       <span class="price">{{ item.price }}</span>
@@ -15,6 +15,12 @@ export default {
     item: {
       type: Object,
       require: true,
+    },
+  },
+  computed: {
+    getImg() {
+      // 如果有this.item.show有这层目录说明在首页
+      return !!this.item.show ? this.item.show.img : this.item.image;
     },
   },
   methods: {
