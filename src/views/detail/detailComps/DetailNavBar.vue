@@ -23,15 +23,25 @@ export default {
   components: {
     NavBar,
   },
+  props: ["stayIndex"],
   data() {
     return {
       title: ["商品", "参数", "评论", "推荐"],
       currentIndex: 0,
     };
   },
+  watch: {
+    /**
+     * 传入的值发生改变给this.currentIndex重新赋值
+     */
+    stayIndex(val) {
+      this.currentIndex = val;
+    },
+  },
   methods: {
     toggleNavBar(index) {
-      this.currentIndex = index;
+      this.$emit("toggleNavBar", index);
+      this.currentIndex = this.stayIndex;
     },
     back() {
       this.$router.go(-1);

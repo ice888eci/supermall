@@ -1,21 +1,31 @@
 <template>
   <div id="detail">
-    <detail-nav-bar class="detail-nav-bar" />
-    <scroll class="content" ref="scroll">
-      <detail-swiper :top-images="topImages"></detail-swiper>
-      <detail-base-info :base-info="goods"></detail-base-info>
-      <detail-shop-info :shop-info="shopInfo"></detail-shop-info>
+    <detail-nav-bar
+      class="detail-nav-bar"
+      @toggleNavBar="toggleNavBar"
+      :stay-index="stayIndex"
+      ref="menus"
+    />
+    <scroll class="content" ref="scroll" @menuStay="menuStay">
+      <detail-swiper :top-images="topImages" />
+      <detail-base-info :base-info="goods" />
+      <detail-shop-info :shop-info="shopInfo" />
       <detail-goods-info :detail-info="detailInfo" @loadImg="loadImg" />
-      <detail-params-info :params-info="paramsInfo" />
-      <detail-comment-info :comment-info="commentInfo" />
-      <main-goods :list="recommend" />
+      <detail-params-info :params-info="paramsInfo" ref="params" />
+      <detail-comment-info :comment-info="commentInfo" ref="comment" />
+      <main-goods :list="recommend" ref="recommend" />
     </scroll>
+    <!-- mixin混入 -->
+    <back-top @click.native="backTop" v-show="isTopShow" />
+    <detail-botton-bar />
   </div>
 </template>
 
 <script>
 // utils
-import { busMixins } from "@/common/mixins";
+import { debounce } from "@/common/utils";
+import { busMixins, backTopMixins } from "@/common/mixins";
+
 // network
 import {
   getDetail,
@@ -32,6 +42,7 @@ import DetailShopInfo from "@/views/detail/detailComps/DetailShopInfo.vue";
 import DetailGoodsInfo from "@/views/detail/detailComps/DetailGoodsInfo.vue";
 import DetailParamsInfo from "@/views/detail/detailComps/DetailParamsInfo.vue";
 import DetailCommentInfo from "@/views/detail/detailComps/DetailCommentInfo.vue";
+import DetailBottonBar from "@/views/detail/detailComps/DetailBottonBar.vue";
 // common
 import Scroll from "@/components/common/scroll/Scroll";
 // content
@@ -39,7 +50,7 @@ import MainGoods from "@/components/content/MainGoods.vue";
 
 export default {
   name: "detail",
-  mixins: [busMixins],
+  mixins: [busMixins, backTopMixins],
   components: {
     Scroll,
     getDetail,
@@ -51,6 +62,7 @@ export default {
     DetailParamsInfo,
     DetailCommentInfo,
     MainGoods,
+    DetailBottonBar,
   },
   data() {
     return {
@@ -62,13 +74,13 @@ export default {
       paramsInfo: {},
       commentInfo: {},
       recommend: [],
+      menuY: [],
+      stayIndex: 0,
+      refreshY: null,
     };
   },
   created() {
-    /**
-     * @/detail
-     * 获取详情消息
-     */
+    // 获取详情消息
     let id = this.$route.params.id;
     getDetail(id).then((result) => {
       let rs = result.data.result;
@@ -89,24 +101,81 @@ export default {
       // 评论信息
       if (rs.rate !== 0) this.commentInfo = rs.rate.list[0];
     });
-    /**
-     * @recommend
-     * 获取推荐消息
-     */
+
+    // 获取推荐消息
     getRecommend().then((result) => {
       let rs = result.data;
       // 推荐信息
       this.recommend = rs.data.list;
     });
+
+    /**
+     * 节流防止频繁获取offsetTop
+     * 必须定义成data属性,定义成方法函数会开启多个debounce,每个debounce互不影响
+     * @refreshY
+     */
+    this.refreshY = debounce(
+      () => {
+        this.menuY = [0].concat(
+          this.$refs.params.$el.offsetTop,
+          this.$refs.comment.$el.offsetTop,
+          this.$refs.recommend.$el.offsetTop
+        );
+      },
+      100,
+      false
+    );
   },
-  mounted() {},
+
   // 没设置keep-alive所以需要使用beforeDestroy或
   destroyed() {
     this.$bus.$off("imgLoad", this.busHandle);
   },
+  computed: {
+    paramsY() {
+      return this.$refs.params.$el.offsetTop;
+    },
+    commentY() {
+      return this.$refs.comment.$el.offsetTop;
+    },
+    recommendY() {
+      return this.$refs.recommend.$el.offsetTop;
+    },
+  },
   methods: {
     loadImg() {
       this.$refs.scroll.refresh();
+      this.$nextTick(this.refreshY);
+    },
+    toggleNavBar(index) {
+      /**
+       * 组件的index和stayIndex同步并发射给组件
+       * @menuY 要为负数因为向上滑动
+       */
+      this.stayIndex = index;
+      this.$refs.scroll.scrollTo(0, -this.menuY[this.stayIndex], 500);
+    },
+    menuStay(position) {
+      let positionY = -position.y;
+      switch (true) {
+        case positionY < this.paramsY:
+          /**
+           * 通过this.stayIndex父传子实现currentInde统一
+           * 也可以直接操作this.$refs.menus.currentIndex
+           */
+          this.stayIndex = 0;
+          break;
+        case positionY < this.commentY:
+          this.stayIndex = 1;
+          break;
+        case positionY < this.recommendY:
+          this.stayIndex = 2;
+          break;
+        default:
+          this.stayIndex = 3;
+          break;
+      }
+      this.back_top_show(positionY);
     },
   },
 };

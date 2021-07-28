@@ -11,7 +11,7 @@ export default {};
 #tabbar {
   width: 100%;
   display: flex;
-  background-color: rgb(236, 236, 236);
+  background-color: #f8f9f9;
   position: fixed;
   bottom: 0%;
   left: 0%;

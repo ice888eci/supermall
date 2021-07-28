@@ -35,14 +35,16 @@
 
 <script>
 // utils
-import { busMixins } from "@/common/mixins";
+import { busMixins, backTopMixins } from "@/common/mixins";
+// const
+import { NEW, POP, SELL } from "@/common/const";
 // common
 import NavBar from "@/components/common/navbar/NavBar";
 import Scroll from "@/components/common/scroll/Scroll";
 // content
 import TabContro from "@/components/content/TabContro.vue";
 import MainGoods from "@/components/content/MainGoods.vue";
-import BackTop from "@/components/content/backtop/BackTop.vue";
+// import BackTop from "@/components/content/backtop/BackTop.vue";
 // network
 import { GetMultidata, GetGoodsData } from "@/network/home";
 // chidren
@@ -59,12 +61,11 @@ export default {
     TabContro,
     MainGoods,
     Scroll,
-    BackTop,
   },
-  mixins: [busMixins],
+  mixins: [busMixins, backTopMixins],
   data() {
     return {
-      TabType: "pop",
+      TabType: POP,
       banners: null,
       recommend: null,
       isTopShow: false,
@@ -72,9 +73,9 @@ export default {
       saveTop: 0,
       isControFiexd: false,
       goods: {
-        new: { page: 0, list: [] },
-        pop: { page: 0, list: [] },
-        sell: { page: 0, list: [] },
+        [NEW]: { page: 0, list: [] },
+        [POP]: { page: 0, list: [] },
+        [SELL]: { page: 0, list: [] },
       },
     };
   },
@@ -87,9 +88,9 @@ export default {
       this.banners = rs.data.data.banner.list;
       this.recommend = rs.data.data.recommend.list;
     });
-    this.getGoodsData("new");
-    this.getGoodsData("pop");
-    this.getGoodsData("sell");
+    this.getGoodsData(NEW);
+    this.getGoodsData(POP);
+    this.getGoodsData(SELL);
   },
   mounted() {},
   //  在当前组件/路由设置了Keep-alive时生效
@@ -102,7 +103,6 @@ export default {
   // 在离开当前组件/路由设置了Keep-alive时生效
   deactivated() {
     this.saveTop = this.$refs.scroll.getScrollY();
-
     /**
      * 离开时关闭当前控制$bus防止其他页面链接自己
      */
@@ -142,13 +142,12 @@ export default {
       });
     },
 
-    //点击事件区域
     /**
      * @tabClick
      * 点击切换类型
      */
     tabClick(index) {
-      this.TabType = index == 0 ? "pop" : index == 1 ? "new" : "sell";
+      this.TabType = index == 0 ? POP : index == 1 ? NEW : SELL;
       // 同步正反两面tab面板的切换
       this.$refs.tabControlP.toggleIndex(index);
       this.$refs.tabControlN.toggleIndex(index);
@@ -159,26 +158,17 @@ export default {
      * 通过native修饰符监听子组件是否被点击
      * 不加点击图片组件无效
      */
-    backTop() {
-      this.$refs.scroll.scroll.scrollTo(0, 0, 1000);
-    },
 
-    /**
-     * @backTopState
-     * 判断是否显示backTop
-     */
+    // 判断是否显示backTop
     backTopState(position) {
-      /**
-       * 大量操控DOM
-       * 不建议这样写
-       */
+      // 大量操控DOM不建议这样写
       let positionY = -position.y;
       if (this.tabControlTop != 0 && positionY > this.tabControlTop) {
         this.isControFiexd = true;
       } else {
         this.isControFiexd = false;
       }
-      this.isTopShow = positionY > 1000;
+      this.back_top_show(positionY);
     },
 
     /**

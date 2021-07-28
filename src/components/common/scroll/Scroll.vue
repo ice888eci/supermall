@@ -46,7 +46,14 @@ export default {
      * 滚动事件
      */
     this.scroll.on("scroll", (postion) => {
-      this.$emit("backTopState", postion);
+      switch (this.$route.name) {
+        case "home":
+          this.$emit("backTopState", postion);
+          break;
+        case "detail":
+          this.$emit("menuStay", postion);
+          break;
+      }
     });
     /**
      * @pullingUp

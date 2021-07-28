@@ -1,4 +1,6 @@
 import { debounce } from "@/common/utils";
+import BackTop from "@/components/content/backtop/BackTop.vue";
+import { TOP_DISTANCE } from "@/common/const";
 export const busMixins = {
     data() {
         return {
@@ -13,5 +15,24 @@ export const busMixins = {
             }
         };
         this.$bus.$on("imgLoad", this.busHandle);
+    },
+}
+
+export const backTopMixins = {
+    components: {
+        BackTop
+    },
+    data() {
+        return {
+            isTopShow: false,
+        }
+    },
+    methods: {
+        backTop() {
+            this.$refs.scroll.scroll.scrollTo(0, 0, 1000);
+        },
+        back_top_show(positionY) {
+            this.isTopShow = positionY > TOP_DISTANCE;
+        },
     },
 }

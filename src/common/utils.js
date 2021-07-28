@@ -16,7 +16,7 @@ function debounce(fn, wait = 1000, immediate = true) {
             call_now && fn.apply(this, arg);
         } else {
             timeout && clearTimeout(timeout);
-            timeout = setTimeout(() => fn().apply(this, arg), wait);
+            timeout = setTimeout(() => fn.apply(this, arg), wait);
         }
     };
 }
