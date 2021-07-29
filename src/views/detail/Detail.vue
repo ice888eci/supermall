@@ -17,11 +17,13 @@
     </scroll>
     <!-- mixin混入 -->
     <back-top @click.native="backTop" v-show="isTopShow" />
-    <detail-botton-bar />
+    <detail-botton-bar @add_shop="add_shop" />
   </div>
 </template>
 
 <script>
+//vuex
+import { mapActions } from "vuex";
 // utils
 import { debounce } from "@/common/utils";
 import { busMixins, backTopMixins } from "@/common/mixins";
@@ -66,6 +68,7 @@ export default {
   },
   data() {
     return {
+      id: null,
       topImages: null,
       itemInfo: null,
       goods: {},
@@ -79,10 +82,11 @@ export default {
       refreshY: null,
     };
   },
+
   created() {
     // 获取详情消息
-    let id = this.$route.params.id;
-    getDetail(id).then((result) => {
+    this.id = this.$route.params.id;
+    getDetail(this.id).then((result) => {
       let rs = result.data.result;
       // 轮播图图片
       this.topImages = rs.itemInfo.topImages;
@@ -92,6 +96,7 @@ export default {
         rs.columns,
         rs.shopInfo.services
       );
+
       // 卖家信息
       this.shopInfo = new GetShopInfo(rs.shopInfo);
       // 效果图展示
@@ -143,6 +148,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions(["changeCart"]),
     loadImg() {
       this.$refs.scroll.refresh();
       this.$nextTick(this.refreshY);
@@ -176,6 +182,20 @@ export default {
           break;
       }
       this.back_top_show(positionY);
+    },
+    add_shop() {
+      const product = {
+        iid: this.id,
+        desc: this.goods.desc,
+        price: this.goods.realPrice,
+        title: this.goods.title,
+        img: this.topImages[0],
+      };
+
+      // this.$store
+      //   .dispatch("changeCart", product)
+      //   .then((result) => console.log(result));
+      this.changeCart(product).then((result) => console.log(result));
     },
   },
 };

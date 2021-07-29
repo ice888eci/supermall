@@ -29,7 +29,7 @@ export default {
   },
   methods: {
     add_shop() {
-      console.log(1);
+      this.$emit("add_shop");
     },
   },
 };

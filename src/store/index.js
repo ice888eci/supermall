@@ -1,21 +1,18 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import getters from './getters'
+import mutations from './mutations'
+import actions from './actions'
+
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        imgLoadNum: 0
+        cartList: []
     },
-    mutations: {
-        upDataImg(state) {
-            state.imgLoadNum += 1;
-        }
-    },
-    actions: {
-        upDataImg(state) {
-            state.commit('upDataImg');
-        }
-    }
+    getters,
+    mutations,
+    actions,
 
 })
