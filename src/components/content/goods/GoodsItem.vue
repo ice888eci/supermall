@@ -1,6 +1,7 @@
 <template>
   <div class="goods-item">
-    <img :src="getImg" @load="imgLoad" @click="goDetail(item)" />
+    <!--v-lazy   代替:src 实现懒加载-->
+    <img v-lazy="getImg" @load="imgLoad" @click="goDetail(item)" />
     <div class="goods-info">
       <p>{{ item.title }}</p>
       <span class="price">{{ item.price }}</span>
