@@ -24,6 +24,12 @@ export default {
         return true;
       },
     },
+    data: {
+      type: Array,
+      default() {
+        return [];
+      },
+    },
   },
   data() {
     return {
@@ -77,6 +83,14 @@ export default {
     },
     getScrollY() {
       return this.scroll.y;
+    },
+  },
+  watch: {
+    data: {
+      handler() {
+        setTimeout(this.refresh, 20);
+      },
+      deep: true,
     },
   },
 };
