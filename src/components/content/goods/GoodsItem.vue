@@ -20,14 +20,15 @@ export default {
   },
   computed: {
     getImg() {
-      // 如果有this.item.show有这层目录说明在首页
+      // this.item.img 是Category的图片
+      if (this.item.img) return this.item.img;
+      // 如果有this.item.show有这层目录说明在首页 或者是详细页眉的图片
       return !!this.item.show ? this.item.show.img : this.item.image;
     },
   },
   methods: {
     imgLoad() {
       this.$bus.$emit("imgLoad");
-      // this.$store.dispatch("upDataImg");
     },
     goDetail(item) {
       this.$router.push({
